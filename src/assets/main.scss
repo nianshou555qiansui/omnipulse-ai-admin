@@ -17,16 +17,26 @@
 }
 
 // 清除浏览器默认内外边距
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
+// ⚠️ 只清 body 和常用块级元素，不要用 * 通配清 padding——
+// 会把 Element Plus 组件内部样式（如按钮文字居中）一起清掉
 html,
 body,
 #app {
+  margin: 0;
+  padding: 0;
   height: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+dl,
+figure {
+  margin: 0;
 }
 
 body {
