@@ -17,13 +17,22 @@ const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 
-// 侧边栏菜单数据：index 是跳转的路由路径
+// 侧边栏菜单数据：index 是跳转的路由路径；children 有值则是子菜单
 const menus = [
   { index: '/dashboard', icon: 'Odometer', title: '数据概览' },
   { index: '/article/channel', icon: 'Folder', title: '文章分类' },
   { index: '/article/manage', icon: 'Document', title: '文章管理' },
   { index: '/ai/assistant', icon: 'MagicStick', title: 'AI 工作台' },
-  { index: '/user/profile', icon: 'User', title: '个人中心' }
+  {
+    index: '/user',
+    icon: 'User',
+    title: '个人中心',
+    children: [
+      { index: '/user/profile', title: '基本资料' },
+      { index: '/user/avatar', title: '更换头像' },
+      { index: '/user/password', title: '重置密码' }
+    ]
+  }
 ]
 
 // 当前用户昵称和头像（从 store 取）
@@ -73,10 +82,24 @@ async function onCommand(command) {
         :default-active="route.path"
         router
       >
-        <el-menu-item v-for="menu in menus" :key="menu.index" :index="menu.index">
-          <el-icon><component :is="menu.icon" /></el-icon>
-          <span>{{ menu.title }}</span>
-        </el-menu-item>
+        <template v-for="menu in menus" :key="menu.index">
+          <!-- 有子菜单的：用 el-sub-menu 折叠展开 -->
+          <el-sub-menu v-if="menu.children" :index="menu.index">
+            <template #title>
+              <el-icon><component :is="menu.icon" /></el-icon>
+              <span>{{ menu.title }}</span>
+            </template>
+            <el-menu-item v-for="child in menu.children" :key="child.index" :index="child.index">
+              {{ child.title }}
+            </el-menu-item>
+          </el-sub-menu>
+
+          <!-- 普通菜单项 -->
+          <el-menu-item v-else :index="menu.index">
+            <el-icon><component :is="menu.icon" /></el-icon>
+            <span>{{ menu.title }}</span>
+          </el-menu-item>
+        </template>
       </el-menu>
     </el-aside>
 
@@ -102,6 +125,7 @@ async function onCommand(command) {
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item command="profile" @click="router.push('/user/profile')">基本资料</el-dropdown-item>
+              <el-dropdown-item command="avatar" @click="router.push('/user/avatar')">更换头像</el-dropdown-item>
               <el-dropdown-item command="password" @click="router.push('/user/password')">重置密码</el-dropdown-item>
               <el-dropdown-item divided command="logout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
