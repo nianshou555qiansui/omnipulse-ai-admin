@@ -81,12 +81,19 @@ omnipulse-ai-admin/
 
 ## 部署
 
-本项目可静态部署（hash 路由 + 相对路径构建），推荐 GitHub Pages：
+本项目已部署到 GitHub Pages（hash 路由 + 相对路径构建，静态托管刷新不 404）：
+
+**线上地址：https://nianshou555qiansui.github.io/omnipulse-ai-admin/**
+
+重新部署：
 
 ```bash
 pnpm build
-# 将 dist/ 内容部署到任意静态托管（GitHub Pages / Vercel / 对象存储等）
+pnpm exec gh-pages -d dist --dotfiles
 ```
+
+> 说明：`--dotfiles` 是必须的——构建产物里 `_plugin-vue_export-helper-*.js` 等下划线开头的文件，
+> 若不带此参数会被 Jekyll 忽略导致 404（页面白屏）。仓库根目录的 `.nojekyll` 文件也用于规避此问题。
 
 ## 致谢
 
