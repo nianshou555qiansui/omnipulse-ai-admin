@@ -1,0 +1,4 @@
+# pnpm 11 配置：批准依赖的构建脚本
+# @parcel/watcher 是 sass 的依赖，需要允许它跑构建脚本（否则 pnpm 会拦着 build 命令）
+allowBuilds:
+  '@parcel/watcher': true
