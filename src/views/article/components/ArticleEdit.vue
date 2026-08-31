@@ -22,10 +22,11 @@ defineOptions({ name: 'ArticleEdit' })
 const drawerVisible = ref(false)
 const editId = ref(null)
 
-// 预置封面图（静态资源，刷新不丢）
+// 预置封面图（放在 public/covers/ 下，构建后原样复制到 dist，刷新不丢）
+// 用相对路径 './covers/...'：部署到子路径（如 .../omnipulse-ai-admin/）下也能正确加载
 const presetCovers = [
-  { url: '/covers/cover1.jpg', name: '封面一' },
-  { url: '/covers/cover2.jpg', name: '封面二' }
+  { url: './covers/cover1.jpg', name: '封面一' },
+  { url: './covers/cover2.jpg', name: '封面二' }
 ]
 
 // 表单数据 + 校验
