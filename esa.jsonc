@@ -1,0 +1,21 @@
+{
+  // 阿里云 ESA Pages 构建配置
+  // 作用：告诉 ESA 怎么安装依赖、怎么构建、静态产物在哪
+  "name": "omnipulse-ai-admin",
+
+  // 安装依赖的命令（本项目用 pnpm）
+  "installCommand": "pnpm install",
+
+  // 构建命令（跑 vite build，产物进 dist）
+  "buildCommand": "pnpm build",
+
+  "assets": {
+    // 构建产物目录，ESA 托管这个目录里的文件
+    "directory": "./dist",
+
+    // 单页应用策略：路径没匹配到文件时返回 index.html
+    // 本项目用的是 hash 路由（带 #），理论上用不到这条，
+    // 但配上更保险（万一以后换 history 路由也不会 404）
+    "notFoundStrategy": "singlePageApplication"
+  }
+}
