@@ -53,3 +53,27 @@ body {
 .page-container {
   padding: 20px;
 }
+
+// ========================================================
+// Element Plus 按钮内图标与文字对齐修复
+// ========================================================
+// el-button 里写「图标 + 文字」时，图标默认不带右边距，
+// 视觉上文字会紧贴图标、显得偏右。这里统一给图标加间距，
+// 并保证图标和文字垂直对齐。
+.el-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  // 图标和后面的文字保持 6px 间距
+  .el-icon + span {
+    margin-left: 6px;
+  }
+
+  // 如果按钮里直接是「图标 + 文本节点」（没包 span），
+  // 给图标加右边距兜底
+  > .el-icon {
+    margin-right: 6px;
+  }
+}
+
