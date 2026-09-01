@@ -20,5 +20,13 @@ app.use(pinia)
 import router from '@/router'
 app.use(router)
 
+// 全局注册 Element Plus 图标
+// 说明：自动导入插件只处理 el-xxx 组件，不认识 @element-plus/icons-vue 里的
+// 图标组件（如 <Plus />、<Search />），不注册的话图标会渲染成空标签。
+import * as ElementPlusIcons from '@element-plus/icons-vue'
+for (const [name, component] of Object.entries(ElementPlusIcons)) {
+  app.component(name, component)
+}
+
 // 把整个应用挂载到 index.html 里的 #app 上
 app.mount('#app')
