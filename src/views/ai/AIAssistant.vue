@@ -16,6 +16,8 @@ defineOptions({ name: 'AIAssistant' })
 
 const aiStore = useAIStore()
 
+// ========== 1. 对话区状态 ==========
+
 // 当前选中的技能
 const activeSkill = ref(null)
 
@@ -33,6 +35,23 @@ const settingsRef = ref(null)
 
 // 消息区滚动到最底部（新消息出现时）
 const chatBodyRef = ref(null)
+
+// ========== 2. 技能工坊状态 ==========
+
+// 技能编辑弹窗显示状态
+const skillDialogVisible = ref(false)
+
+// 正在编辑的技能（null = 新增）
+const editingSkill = ref(null)
+
+// 技能表单数据
+const skillForm = reactive({
+  name: '',
+  description: '',
+  systemPrompt: ''
+})
+
+// 消息区滚动到最底部（新消息出现时）
 function scrollToBottom() {
   nextTick(() => {
     if (chatBodyRef.value) {
@@ -95,15 +114,6 @@ function onUsePreset(preset) {
 }
 
 // ---------- 技能工坊 CRUD ----------
-
-// 新增技能弹窗状态
-const skillDialogVisible = ref(false)
-const editingSkill = ref(null)
-const skillForm = reactive({
-  name: '',
-  description: '',
-  systemPrompt: ''
-})
 
 // 打开新增技能
 function onAddSkill() {

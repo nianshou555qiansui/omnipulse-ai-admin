@@ -85,15 +85,14 @@ omnipulse-ai-admin/
 
 **线上地址：https://nianshou555qiansui.github.io/omnipulse-ai-admin/**
 
-重新部署：
+重新部署（一键完成构建 + 推送，命令见 `scripts/deploy.js`）：
 
 ```bash
-pnpm build
-pnpm exec gh-pages -d dist --dotfiles
+pnpm run deploy
 ```
 
-> 说明：`--dotfiles` 是必须的——构建产物里 `_plugin-vue_export-helper-*.js` 等下划线开头的文件，
-> 若不带此参数会被 Jekyll 忽略导致 404（页面白屏）。仓库根目录的 `.nojekyll` 文件也用于规避此问题。
+> 说明：部署脚本会自动带上 `dotfiles` 配置——构建产物里 `_plugin-vue_export-helper-*.js` 等下划线开头的文件，
+> 若不带上传会被 Jekyll 忽略导致 404（页面白屏）。仓库根目录的 `.nojekyll` 文件也用于规避此问题。
 
 ## 致谢
 
