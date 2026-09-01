@@ -1,1 +1,0 @@
-import{It as e,On as t}from"./database-C7qxavIy.js";var n=r=>{let i=t(r)?r:[r],a=[];return i.forEach(r=>{t(r)?a.push(...n(r)):e(r)&&r.component?.subTree?a.push(r,...n(r.component.subTree)):e(r)&&t(r.children)?a.push(...n(r.children)):e(r)&&r.shapeFlag===2?a.push(...n(r.type())):a.push(r)}),a};export{n as t};

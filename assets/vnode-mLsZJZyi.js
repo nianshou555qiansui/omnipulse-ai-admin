@@ -1,0 +1,1 @@
+import{Zn as e,an as t}from"./database-qP6A3v8i.js";var n=r=>{let i=e(r)?r:[r],a=[];return i.forEach(r=>{e(r)?a.push(...n(r)):t(r)&&r.component?.subTree?a.push(r,...n(r.component.subTree)):t(r)&&e(r.children)?a.push(...n(r.children)):t(r)&&r.shapeFlag===2?a.push(...n(r.type())):a.push(r)}),a};export{n as t};

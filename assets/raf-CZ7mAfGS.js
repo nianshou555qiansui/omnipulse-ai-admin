@@ -1,0 +1,1 @@
+import{j as e}from"./isEqual-D0J0zZAy.js";import{ht as t}from"./database-qP6A3v8i.js";var n=`update:modelValue`,r=`change`,i=`input`;function a(){if(!arguments.length)return[];var t=arguments[0];return e(t)?t:[t]}var o=e=>t?window.requestAnimationFrame(e):setTimeout(e,16),s=e=>t?window.cancelAnimationFrame(e):clearTimeout(e);export{i as a,r as i,o as n,n as o,a as r,s as t};
