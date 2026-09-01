@@ -31,6 +31,11 @@ const form = reactive({
 const modelOptions = ref([])
 const fetchingModels = ref(false)
 
+// 测试连接状态：{ type: 'success' | 'error' | '', text: string }
+// 显示在弹窗内部，不会被其他弹层挡住，用户一定看得到结果
+const testing = ref(false)
+const testResult = ref({ type: '', text: '' })
+
 // 打开弹窗
 function open() {
   // 用 store 里的配置回填表单
@@ -72,14 +77,20 @@ async function onTestConnection() {
     ElMessage.warning('请先填写中转站地址和 Key')
     return
   }
+
+  // 测试中：清掉上一次结果，改成"正在测试…"
+  testResult.value = { type: '', text: '正在测试连接…' }
+  testing.value = true
   try {
     await sendChat({
       prompt: '请只回复两个字：正常',
       configOverride: { ...form }
     })
-    ElMessage.success('连接成功，配置可用')
+    testResult.value = { type: 'success', text: '连接成功，配置可用' }
   } catch (err) {
-    ElMessage.error(err.message || '连接失败')
+    testResult.value = { type: 'error', text: `连接失败：${err.message || '未知错误'}` }
+  } finally {
+    testing.value = false
   }
 }
 
@@ -130,8 +141,13 @@ defineExpose({ open })
       </el-form-item>
     </el-form>
 
+    <!-- 测试连接结果：显示在弹窗内部，一眼可见 -->
+    <div v-if="testResult.text" class="test-result" :class="testResult.type">
+      {{ testResult.text }}
+    </div>
+
     <template #footer>
-      <el-button @click="onTestConnection">测试连接</el-button>
+      <el-button :loading="testing" @click="onTestConnection">测试连接</el-button>
       <el-button @click="dialogVisible = false">取消</el-button>
       <el-button type="primary" @click="onSave">保存</el-button>
     </template>
@@ -143,5 +159,24 @@ defineExpose({ open })
   display: flex;
   gap: 8px;
   width: 100%;
+}
+
+/* 测试连接结果提示 */
+.test-result {
+  margin-top: 4px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.test-result.success {
+  color: #16a34a;
+  background: rgba(22, 163, 74, 0.08);
+}
+
+.test-result.error {
+  color: #dc2626;
+  background: rgba(220, 38, 38, 0.08);
 }
 </style>
