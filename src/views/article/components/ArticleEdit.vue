@@ -2,7 +2,6 @@
 // ========================================================
 // 文章「发布/编辑」抽屉
 // ========================================================
-// 知识点来源：大事件笔记「文章发布&修改」章
 // 父组件用 ref.open(row) 打开：row 有 id = 编辑回显，无 id = 新增。
 // 保存成功 emit('success')，父组件刷新列表。
 // 封面处理：预置图是静态资源引用（刷新不丢）；新上传的图以 base64 存 localStorage（会占容量，提示刷新后可能丢失）。
@@ -93,8 +92,12 @@ function selectPresetCover(url) {
 }
 
 // 上传新封面：el-upload 不自动上传，把选中的文件转成 base64 预览
-// 知识点来源：大事件笔记「上传文件」章（FileReader 转 base64）
 function onUploadCover(file) {
+  // 和头像一样限制 2MB：base64 会存进 localStorage，大图会撑爆配额
+  if (file.raw.size > 2 * 1024 * 1024) {
+    ElMessage.warning('图片不能超过 2MB，请压缩后再试')
+    return
+  }
   // file.raw 是原始文件对象（el-upload 封装过）
   const reader = new FileReader()
   reader.onload = () => {

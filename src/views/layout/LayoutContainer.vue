@@ -3,7 +3,6 @@
 // 主布局：登录后所有页面的「壳」
 // ========================================================
 // 深色侧边栏 + 顶栏 + 内容区三块结构。
-// 知识点来源：大事件笔记「首页 layout 架子 [element-plus 菜单]」章
 // ========================================================
 
 import { ref, computed, onMounted } from 'vue'
@@ -39,27 +38,45 @@ const menus = [
 const nickname = computed(() => userStore.nickname)
 const avatar = computed(() => userStore.avatar)
 
+// 面包屑显示的页面标题：先在顶层菜单里找，找不到再去子菜单里找
+// （比如 /user/profile 在「个人中心」的 children 里，直接 find 顶层是找不到的）
+const pageTitle = computed(() => {
+  // 顶层直接命中（数据概览、文章分类这些）
+  const top = menus.find((m) => m.index === route.path)
+  if (top) return top.title
+  // 到各菜单的子项里找（个人中心的三个子页面）
+  for (const m of menus) {
+    const child = m.children?.find((c) => c.index === route.path)
+    if (child) return `${m.title} / ${child.title}`
+  }
+  return ''
+})
+
 // 页面挂载后拉取最新用户信息（比如头像更新后同步顶栏）
 onMounted(() => {
   userStore.fetchUser().catch(() => {})
 })
 
-// 顶栏下拉菜单：退出登录
+// 顶栏下拉菜单：统一由 command 分发（基本资料/头像/密码跳转，退出登录需确认）
 async function onCommand(command) {
-  if (command !== 'logout') return
-  try {
-    await ElMessageBox.confirm('确定要退出登录吗？', '提示', {
-      confirmButtonText: '退出',
-      cancelButtonText: '取消',
-      type: 'warning'
-    })
-  } catch {
-    // 用户点了取消，什么都不做
-    return
+  if (command === 'logout') {
+    try {
+      await ElMessageBox.confirm('确定要退出登录吗？', '提示', {
+        confirmButtonText: '退出',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+    } catch {
+      // 用户点了取消，什么都不做
+      return
+    }
+    await userStore.logout()
+    ElMessage.success('已退出登录')
+    router.push('/login')
+  } else {
+    // profile / avatar / password：拼出对应个人中心子页面的路由
+    router.push(`/user/${command}`)
   }
-  await userStore.logout()
-  ElMessage.success('已退出登录')
-  router.push('/login')
 }
 </script>
 
@@ -109,7 +126,7 @@ async function onCommand(command) {
         <div class="header-title">
           <el-breadcrumb separator="/">
             <el-breadcrumb-item>OmniPulse</el-breadcrumb-item>
-            <el-breadcrumb-item>{{ menus.find((m) => m.index === route.path)?.title || '' }}</el-breadcrumb-item>
+            <el-breadcrumb-item v-if="pageTitle">{{ pageTitle }}</el-breadcrumb-item>
           </el-breadcrumb>
         </div>
 
@@ -124,9 +141,9 @@ async function onCommand(command) {
           </div>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item command="profile" @click="router.push('/user/profile')">基本资料</el-dropdown-item>
-              <el-dropdown-item command="avatar" @click="router.push('/user/avatar')">更换头像</el-dropdown-item>
-              <el-dropdown-item command="password" @click="router.push('/user/password')">重置密码</el-dropdown-item>
+              <el-dropdown-item command="profile">基本资料</el-dropdown-item>
+              <el-dropdown-item command="avatar">更换头像</el-dropdown-item>
+              <el-dropdown-item command="password">重置密码</el-dropdown-item>
               <el-dropdown-item divided command="logout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>

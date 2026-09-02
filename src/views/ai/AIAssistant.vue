@@ -33,7 +33,7 @@ const inputText = ref('')
 // AI 设置弹窗 ref
 const settingsRef = ref(null)
 
-// 消息区滚动到最底部（新消息出现时）
+// 消息区滚动的 DOM 引用
 const chatBodyRef = ref(null)
 
 // ========== 2. 技能工坊状态 ==========
@@ -70,6 +70,10 @@ async function onSend() {
   const text = inputText.value.trim()
   if (!text) return
 
+  // 正在等上一次回复时不再发送（按钮只有 loading 不够，键盘 Enter 也能触发）
+  // 不拦的话两个请求会同时往「消息列表最后一项」写回复，内容互相覆盖
+  if (sending.value) return
+
   // 把用户消息加进列表
   messageList.value.push({ role: 'user', content: text })
   inputText.value = ''
@@ -105,12 +109,6 @@ async function onSend() {
     sending.value = false
     scrollToBottom()
   }
-}
-
-// 点击预设问题（技能工坊里配置了 presetPrompts 时）
-function onUsePreset(preset) {
-  inputText.value = preset
-  onSend()
 }
 
 // ---------- 技能工坊 CRUD ----------

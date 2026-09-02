@@ -2,7 +2,6 @@
 // ========================================================
 // 个人中心：更换头像
 // ========================================================
-// 知识点来源：大事件笔记「个人中心项目实战 - 更换头像」章
 // el-upload 选图（不自动上传）→ FileReader 转 base64 预览 → 保存到 store
 // ========================================================
 
@@ -26,7 +25,13 @@ const uploadRef = ref(null)
 const saving = ref(false)
 
 // 选图后：FileReader 转 base64 预览
+// 限制 2MB：图片转成 base64 会比原文件大约 1/3，而它是要存进
+// localStorage 的（浏览器一般只给 5MB），大图存进去会把配额撑爆
 function onSelect(file) {
+  if (file.raw.size > 2 * 1024 * 1024) {
+    ElMessage.warning('图片不能超过 2MB，请压缩后再试')
+    return
+  }
   const reader = new FileReader()
   reader.onload = () => {
     preview.value = reader.result
@@ -54,7 +59,6 @@ async function onSave() {
 // 触发选择图片（点击头像区域就打开文件选择框）
 function onPick() {
   // uploadRef.$el 是 el-upload 的根元素，找到里面的隐藏 input 并点击
-  // 知识点来源：大事件笔记「选择预览图片」章
   uploadRef.value.$el.querySelector('input').click()
 }
 </script>

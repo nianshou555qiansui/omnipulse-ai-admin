@@ -3,7 +3,6 @@
 // 登录 / 注册页
 // ========================================================
 // 登录和注册共用这一个页面，用 isRegister 切换。
-// 知识点来源：大事件笔记「注册登录 静态结构 & 基本切换」「登录功能」章
 // ========================================================
 
 import { ref, reactive } from 'vue'
@@ -28,7 +27,6 @@ const form = reactive({
 })
 
 // 表单校验规则
-// 知识点来源：大事件笔记「实现注册校验」章（required / min / max / validator）
 const rules = {
   username: [
     { required: true, message: '请输入用户名', trigger: 'blur' },
@@ -36,7 +34,20 @@ const rules = {
   ],
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 6, max: 20, message: '密码长度 6~20 个字符', trigger: 'blur' }
+    { min: 6, max: 20, message: '密码长度 6~20 个字符', trigger: 'blur' },
+    // 只能是英文、数字、常见符号：内部用 btoa() 存密码（只认 Latin-1 字符），
+    // 中文或 Emoji 会直接抛错，这里提前在表单拦下并给出人话提示
+    {
+      validator: (rule, value, callback) => {
+        // ^[\x21-\x7e]+$ = 全部是可见 ASCII 字符（不含空格）
+        if (value && !/^[\x21-\x7e]+$/.test(value)) {
+          callback(new Error('密码只能包含英文、数字和常见符号'))
+        } else {
+          callback()
+        }
+      },
+      trigger: 'blur'
+    }
   ],
   // 确认密码只在注册时生效，用自定义校验函数判断是否和密码一致
   repassword: [

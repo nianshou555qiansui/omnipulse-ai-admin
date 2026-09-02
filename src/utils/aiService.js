@@ -103,6 +103,11 @@ export async function sendChat({ prompt, systemPrompt = '', configOverride = nul
 
   // OpenAI 兼容接口的返回结构：choices[0].message.content 是完整回复
   const text = response.data?.choices?.[0]?.message?.content || ''
+  // 请求成功但没拿到文本（choices 为空 / 格式异常 / 只有工具调用）：
+  // 必须当错误抛出，否则界面上会一直显示加载动画，测试连接还会误报成功
+  if (!text) {
+    throw new Error('接口返回了成功状态，但回复内容为空，请检查模型是否正确')
+  }
   if (onDone) {
     onDone(text)
   }
