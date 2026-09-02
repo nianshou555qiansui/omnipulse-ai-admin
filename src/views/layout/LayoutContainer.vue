@@ -51,10 +51,7 @@ async function onCommand(command) {
     await ElMessageBox.confirm('确定要退出登录吗？', '提示', {
       confirmButtonText: '退出',
       cancelButtonText: '取消',
-      type: 'warning',
-      // 强制确认框固定在屏幕居中，避免叠在下拉菜单上被带偏到左下角
-      appendTo: document.body,
-      customClass: 'logout-confirm'
+      type: 'warning'
     })
   } catch {
     // 用户点了取消，什么都不做

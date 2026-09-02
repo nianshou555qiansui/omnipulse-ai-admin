@@ -4,6 +4,12 @@ import App from './App.vue'
 // 引入全局样式（含 Element Plus 的基础样式覆盖）
 import '@/assets/main.scss'
 
+// ElMessage / ElMessageBox 是通过 JavaScript 调用的服务组件，不会像模板里的
+// el-button 那样被自动导入插件识别，必须手动引入样式。否则虽然会创建 DOM，
+// 但通知和确认框没有背景、遮罩与层级，看起来就像没有弹出。
+import 'element-plus/es/components/message/style/css'
+import 'element-plus/es/components/message-box/style/css'
+
 // 首次启动时写入演示数据（localStorage 为空才写）
 import { initSeedData } from '@/db/seed'
 initSeedData()
